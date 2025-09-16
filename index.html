@@ -15,6 +15,7 @@
             flex-direction: column;
             text-align: center;
             overflow: hidden;
+            position: relative;
         }
         .container {
             background-color: #ffffff;
@@ -123,7 +124,6 @@
 
         let noCount = 0;
         let yesScale = 1;
-        let noScale = 1;
 
         noBtn.addEventListener('click', () => {
             if (noCount < noMessages.length) {
@@ -138,13 +138,9 @@
             yesScale += 0.2;
             yesBtn.style.transform = `scale(${yesScale})`;
 
-            // Hayır butonunu küçült
-            noScale -= 0.2;
-            noBtn.style.transform = `scale(${noScale})`;
-            if (noScale <= 0) {
-                noBtn.style.opacity = 0;
-                noBtn.style.pointerEvents = 'none'; // Tıklamayı engeller
-            }
+            // Hayır butonunu görünmez yap
+            noBtn.style.opacity = 0;
+            noBtn.style.pointerEvents = 'none'; // Tıklamayı engeller
         });
 
         yesBtn.addEventListener('click', () => {
