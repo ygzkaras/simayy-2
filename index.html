@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seni Seviyorum</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #fce4ec;
+            font-family: Arial, sans-serif;
+            flex-direction: column;
+            text-align: center;
+            overflow: hidden;
+            position: relative;
+        }
+        .container {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            z-index: 1;
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: #d81b60;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            z-index: 2;
+        }
+        .buttons-wrapper {
+            position: relative;
+            width: 300px; /* Butonlar için sabit bir genişlik ayarlandı */
+            height: 100px; /* Butonların hareket edeceği dikey alan */
+        }
+        #yesBtn {
+            padding: 15px 30px;
+            font-size: 1.1em;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: transform 0.2s, background-color 0.2s;
+            white-space: nowrap;
+            background-color: #4caf50;
+            color: white;
+            z-index: 3;
+            transform: scale(1);
+            transition: transform 0.5s ease;
+            position: absolute;
+            left: 0;
+        }
+        #noBtn {
+            padding: 15px 30px;
+            font-size: 1.1em;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: transform 0.2s, background-color 0.2s;
+            white-space: nowrap;
+            background-color: #f44336;
+            color: white;
+            position: absolute;
+            z-index: 3;
+            right: 0;
+            top: 0;
+        }
+
+        /* Kalp efektleri için CSS */
+        .heart {
+            position: absolute;
+            background-color: #ff69b4;
+            width: 20px;
+            height: 20px;
+            transform: rotate(-45deg);
+            animation: rise 3s forwards;
+            opacity: 0;
+            z-index: 0;
+        }
+        .heart:before,
+        .heart:after {
+            content: "";
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: #ff69b4;
+        }
+        .heart:before {
+            top: -10px;
+            left: 0;
+        }
+        .heart:after {
+            left: 10px;
+            top: 0;
+        }
+
+        @keyframes rise {
+            0% {
+                transform: rotate(-45deg) translateY(0);
+                opacity: 1;
+            }
+            100% {
+                transform: rotate(-45deg) translateY(-400px);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 id="question">Simay, çok güzel misin?</h1>
+    </div>
+    <div class="buttons-wrapper">
+        <button id="yesBtn">Tabii ki</button>
+        <button id="noBtn">Hayır</button>
+    </div>
+
+    <script>
+        const noMessages = [
+            "Emin misin? Bir daha düşün.",
+            "Bence çok güzelsin, bir daha tıkla.",
+            "Yanlış tuşa bastın sanırım, doğru olan 'Evet'.",
+            "Güzelliğinden aklın karıştı galiba, bir de 'Evet'e basmayı dene.",
+            "Böyle güzelliğe 'Hayır' denir mi hiç?"
+        ];
+        const yesMessage = "Sonunda akıllandın demek! Güzel kız.";
+
+        const questionEl = document.getElementById('question');
+        const noBtn = document.getElementById('noBtn');
+        const yesBtn = document.getElementById('yesBtn');
+        const buttonsWrapper = document.querySelector('.buttons-wrapper');
+
+        let noCount = 0;
+        let yesScale = 1;
+
+        noBtn.addEventListener('click', () => {
+            if (noCount < noMessages.length) {
+                questionEl.textContent = noMessages[noCount];
+                noCount++;
+            } else {
+                questionEl.textContent = "Beni kırma artık, 'Evet'e basmalısın.";
+                noCount = 0;
+            }
+
+            const wrapperRect = buttonsWrapper.getBoundingClientRect();
+            const yesBtnRect = yesBtn.getBoundingClientRect();
+            const noBtnWidth = noBtn.offsetWidth;
+
+            const newX = Math.random() * (wrapperRect.width - noBtnWidth - yesBtnRect.width - 20); /* Evet butonunun genişliğini ve aralığı hesaba kat */
+            const newY = Math.random() * (wrapperRect.height - noBtn.offsetHeight);
+
+            noBtn.style.left = `${newX + yesBtnRect.width + 20}px`;
+            noBtn.style.top = `${newY}px`;
+
+            yesScale += 0.2;
+            yesBtn.style.transform = `scale(${yesScale})`;
+        });
+
+        yesBtn.addEventListener('click', () => {
+            questionEl.textContent = yesMessage;
+            noBtn.style.display = 'none';
+            yesBtn.style.display = 'none';
+
+            createHearts();
+        });
+
+        function createHearts() {
+            const numberOfHearts = 20;
+            const body = document.body;
+
+            for (let i = 0; i < numberOfHearts; i++) {
+                const heart = document.createElement('div');
+                heart.classList.add('heart');
+
+                const startX = Math.random() * window.innerWidth;
+                const startY = window.innerHeight - 30;
+                
+                heart.style.left = `${startX}px`;
+                heart.style.top = `${startY}px`;
+
+                heart.style.animationDuration = `${2 + Math.random() * 2}s`;
+                heart.style.animationDelay = `${Math.random() * 1.5}s`;
+
+                body.appendChild(heart);
+
+                heart.addEventListener('animationend', () => {
+                    heart.remove();
+                });
+            }
+        }
+    </script>
+</body>
+</html>
