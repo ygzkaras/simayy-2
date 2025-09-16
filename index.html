@@ -37,7 +37,7 @@
             align-items: center;
             gap: 20px; /* Butonlar arasında boşluk bırakır */
         }
-        #yesBtn, #noBtn {
+        .button {
             padding: 15px 30px;
             font-size: 1.1em;
             border: none;
@@ -104,8 +104,8 @@
         <h1 id="question">Simay, çok güzel misin?</h1>
     </div>
     <div class="buttons-wrapper">
-        <button id="yesBtn">Tabii ki</button>
-        <button id="noBtn">Hayır</button>
+        <button id="yesBtn" class="button">Tabii ki</button>
+        <button id="noBtn" class="button">Hayır</button>
     </div>
 
     <script>
@@ -134,13 +134,11 @@
                 noCount = 0;
             }
 
-            // Evet butonunu büyüt
             yesScale += 0.2;
             yesBtn.style.transform = `scale(${yesScale})`;
 
-            // Hayır butonunu görünmez yap
             noBtn.style.opacity = 0;
-            noBtn.style.pointerEvents = 'none'; // Tıklamayı engeller
+            noBtn.style.pointerEvents = 'none';
         });
 
         yesBtn.addEventListener('click', () => {
