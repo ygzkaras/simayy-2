@@ -1,9 +1,9 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Seni Seviyorum.</title>
+    <title>Seni Seviyorum</title>
     <style>
         body {
             display: flex;
@@ -32,40 +32,35 @@
             z-index: 2;
         }
         .buttons-wrapper {
+            display: flex; /* Flexbox ile butonlar yan yana */
+            justify-content: center;
+            align-items: center;
             position: relative;
-            width: 300px; /* Butonlar için sabit bir genişlik ayarlandı */
+            width: 100%;
             height: 100px; /* Butonların hareket edeceği dikey alan */
+            gap: 20px; /* Butonlar arasında boşluk */
+        }
+        #yesBtn, #noBtn {
+            padding: 15px 30px;
+            font-size: 1.1em;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: transform 0.2s, background-color 0.2s;
+            white-space: nowrap;
+            z-index: 3;
         }
         #yesBtn {
-            padding: 15px 30px;
-            font-size: 1.1em;
-            border: none;
-            border-radius: 25px;
-            cursor: pointer;
-            transition: transform 0.2s, background-color 0.2s;
-            white-space: nowrap;
             background-color: #4caf50;
             color: white;
-            z-index: 3;
             transform: scale(1);
             transition: transform 0.5s ease;
-            position: absolute;
-            left: 0;
         }
         #noBtn {
-            padding: 15px 30px;
-            font-size: 1.1em;
-            border: none;
-            border-radius: 25px;
-            cursor: pointer;
-            transition: transform 0.2s, background-color 0.2s;
-            white-space: nowrap;
             background-color: #f44336;
             color: white;
+            transition: all 0.5s ease;
             position: absolute;
-            z-index: 3;
-            right: 0;
-            top: 0;
         }
 
         /* Kalp efektleri için CSS */
@@ -96,7 +91,6 @@
             left: 10px;
             top: 0;
         }
-
         @keyframes rise {
             0% {
                 transform: rotate(-45deg) translateY(0);
@@ -145,16 +139,15 @@
                 noCount = 0;
             }
 
+            // 'Hayır' butonunun hareket edeceği alanın genişliğini hesapla
             const wrapperRect = buttonsWrapper.getBoundingClientRect();
-            const yesBtnRect = yesBtn.getBoundingClientRect();
-            const noBtnWidth = noBtn.offsetWidth;
-
-            const newX = Math.random() * (wrapperRect.width - noBtnWidth - yesBtnRect.width - 20); /* Evet butonunun genişliğini ve aralığı hesaba kat */
+            const newX = Math.random() * (wrapperRect.width - noBtn.offsetWidth);
             const newY = Math.random() * (wrapperRect.height - noBtn.offsetHeight);
 
-            noBtn.style.left = `${newX + yesBtnRect.width + 20}px`;
-            noBtn.style.top = `${newY}px`;
+            // 'Hayır' butonunu rastgele konuma taşı
+            noBtn.style.transform = `translate(${newX}px, ${newY}px)`;
 
+            // 'Evet' butonunu büyüt
             yesScale += 0.2;
             yesBtn.style.transform = `scale(${yesScale})`;
         });
@@ -170,22 +163,16 @@
         function createHearts() {
             const numberOfHearts = 20;
             const body = document.body;
-
             for (let i = 0; i < numberOfHearts; i++) {
                 const heart = document.createElement('div');
                 heart.classList.add('heart');
-
                 const startX = Math.random() * window.innerWidth;
                 const startY = window.innerHeight - 30;
-                
                 heart.style.left = `${startX}px`;
                 heart.style.top = `${startY}px`;
-
                 heart.style.animationDuration = `${2 + Math.random() * 2}s`;
                 heart.style.animationDelay = `${Math.random() * 1.5}s`;
-
                 body.appendChild(heart);
-
                 heart.addEventListener('animationend', () => {
                     heart.remove();
                 });
@@ -193,5 +180,4 @@
         }
     </script>
 </body>
-
 </html>
