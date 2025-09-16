@@ -15,7 +15,6 @@
             flex-direction: column;
             text-align: center;
             overflow: hidden;
-            position: relative;
         }
         .container {
             background-color: #ffffff;
@@ -32,13 +31,10 @@
             z-index: 2;
         }
         .buttons-wrapper {
-            display: flex; /* Flexbox ile butonlar yan yana */
+            display: flex;
             justify-content: center;
             align-items: center;
-            position: relative;
-            width: 100%;
-            height: 100px; /* Butonların hareket edeceği dikey alan */
-            gap: 20px; /* Butonlar arasında boşluk */
+            gap: 20px; /* Butonlar arasında boşluk bırakır */
         }
         #yesBtn, #noBtn {
             padding: 15px 30px;
@@ -46,7 +42,7 @@
             border: none;
             border-radius: 25px;
             cursor: pointer;
-            transition: transform 0.2s, background-color 0.2s;
+            transition: transform 0.5s ease, opacity 0.5s ease;
             white-space: nowrap;
             z-index: 3;
         }
@@ -54,15 +50,14 @@
             background-color: #4caf50;
             color: white;
             transform: scale(1);
-            transition: transform 0.5s ease;
         }
         #noBtn {
             background-color: #f44336;
             color: white;
-            transition: all 0.5s ease;
-            position: absolute;
+            transform: scale(1);
+            opacity: 1;
         }
-
+        
         /* Kalp efektleri için CSS */
         .heart {
             position: absolute;
@@ -125,10 +120,10 @@
         const questionEl = document.getElementById('question');
         const noBtn = document.getElementById('noBtn');
         const yesBtn = document.getElementById('yesBtn');
-        const buttonsWrapper = document.querySelector('.buttons-wrapper');
 
         let noCount = 0;
         let yesScale = 1;
+        let noScale = 1;
 
         noBtn.addEventListener('click', () => {
             if (noCount < noMessages.length) {
@@ -139,17 +134,17 @@
                 noCount = 0;
             }
 
-            // 'Hayır' butonunun hareket edeceği alanın genişliğini hesapla
-            const wrapperRect = buttonsWrapper.getBoundingClientRect();
-            const newX = Math.random() * (wrapperRect.width - noBtn.offsetWidth);
-            const newY = Math.random() * (wrapperRect.height - noBtn.offsetHeight);
-
-            // 'Hayır' butonunu rastgele konuma taşı
-            noBtn.style.transform = `translate(${newX}px, ${newY}px)`;
-
-            // 'Evet' butonunu büyüt
+            // Evet butonunu büyüt
             yesScale += 0.2;
             yesBtn.style.transform = `scale(${yesScale})`;
+
+            // Hayır butonunu küçült
+            noScale -= 0.2;
+            noBtn.style.transform = `scale(${noScale})`;
+            if (noScale <= 0) {
+                noBtn.style.opacity = 0;
+                noBtn.style.pointerEvents = 'none'; // Tıklamayı engeller
+            }
         });
 
         yesBtn.addEventListener('click', () => {
