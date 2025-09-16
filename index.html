@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seni Seviyorum</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #fce4ec;
+            font-family: Arial, sans-serif;
+            flex-direction: column;
+            text-align: center;
+            overflow: hidden;
+            position: relative;
+        }
+        .container {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+            z-index: 1;
+            margin-bottom: 20px; /* Butonlarla arasında boşluk bırakır */
+        }
+        h1 {
+            color: #d81b60;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            z-index: 2;
+        }
+        .buttons-container {
+            position: relative;
+            width: 100%;
+            height: 150px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        button {
+            padding: 15px 30px;
+            font-size: 1.1em;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: transform 0.2s, background-color 0.2s;
+            white-space: nowrap;
+        }
+        #yesBtn {
+            background-color: #4caf50;
+            color: white;
+            z-index: 3;
+            transform: scale(1);
+            transition: transform 0.5s ease;
+        }
+        #noBtn {
+            background-color: #f44336;
+            color: white;
+            position: absolute;
+            z-index: 3;
+            transition: transform 0.2s;
+        }
+
+        /* Kalp efektleri için CSS */
+        .heart {
+            position: absolute;
+            background-color: #ff69b4; /* Pembe kalp */
+            width: 20px;
+            height: 20px;
+            transform: rotate(-45deg);
+            animation: rise 3s forwards; /* rise animasyonunu başlat */
+            opacity: 0; /* Başlangıçta görünmez */
+            z-index: 0; /* Diğer elementlerin arkasında kalır */
+        }
+        .heart:before,
+        .heart:after {
+            content: "";
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: #ff69b4;
+        }
+        .heart:before {
+            top: -10px;
+            left: 0;
+        }
+        .heart:after {
+            left: 10px;
+            top: 0;
+        }
+
+        @keyframes rise {
+            0% {
+                transform: rotate(-45deg) translateY(0);
+                opacity: 1;
+            }
+            100% {
+                transform: rotate(-45deg) translateY(-400px); /* Yukarı doğru uçma */
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 id="question">Simay, çok güzel misin?</h1>
+    </div>
+    <div class="buttons-container">
+        <button id="yesBtn">Tabii ki</button>
+        <button id="noBtn">Hayır</button>
+    </div>
+
+    <script>
+        const noMessages = [
+            "Emin misin? Bir daha düşün.",
+            "Bence çok güzelsin, bir daha tıkla.",
+            "Yanlış tuşa bastın sanırım, doğru olan 'Evet'.",
+            "Güzelliğinden aklın karıştı galiba, bir de 'Evet'e basmayı dene.",
+            "Böyle güzelliğe 'Hayır' denir mi hiç?"
+        ];
+        const yesMessage = "Sonunda akıllandın demek! Güzel kız.";
+
+        const questionEl = document.getElementById('question');
+        const noBtn = document.getElementById('noBtn');
+        const yesBtn = document.getElementById('yesBtn');
+        const buttonsContainer = document.querySelector('.buttons-container');
+
+        let noCount = 0;
+        let yesScale = 1;
+
+        noBtn.addEventListener('click', () => {
+            if (noCount < noMessages.length) {
+                questionEl.textContent = noMessages[noCount];
+                noCount++;
+            } else {
+                questionEl.textContent = "Beni kırma artık, 'Evet'e basmalısın.";
+                noCount = 0;
+            }
+
+            // Rastgele yeni bir konum belirle
+            const containerWidth = buttonsContainer.offsetWidth;
+            const containerHeight = buttonsContainer.offsetHeight;
+            const newX = Math.random() * (containerWidth - noBtn.offsetWidth);
+            const newY = Math.random() * (containerHeight - noBtn.offsetHeight);
+
+            // Butonun yeni konumunu ayarla
+            noBtn.style.left = `${newX}px`;
+            noBtn.style.top = `${newY}px`;
+
+            // Evet butonunu büyüt
+            yesScale += 0.2;
+            yesBtn.style.transform = `scale(${yesScale})`;
+        });
+
+        yesBtn.addEventListener('click', () => {
+            questionEl.textContent = yesMessage;
+            noBtn.style.display = 'none';
+            yesBtn.style.display = 'none';
+
+            // Kalp animasyonunu başlat
+            createHearts();
+        });
+
+        function createHearts() {
+            const numberOfHearts = 20; // Oluşturulacak kalp sayısı
+            const body = document.body;
+
+            for (let i = 0; i < numberOfHearts; i++) {
+                const heart = document.createElement('div');
+                heart.classList.add('heart');
+
+                // Kalplerin rastgele bir konumdan başlamasını sağla (altta)
+                const startX = Math.random() * window.innerWidth;
+                const startY = window.innerHeight - 30; // Sayfanın altından başla
+                
+                heart.style.left = `${startX}px`;
+                heart.style.top = `${startY}px`;
+
+                // Her kalbe farklı bir animasyon süresi ve gecikme ver
+                heart.style.animationDuration = `${2 + Math.random() * 2}s`; // 2-4 saniye
+                heart.style.animationDelay = `${Math.random() * 1.5}s`; // 0-1.5 saniye gecikme
+
+                body.appendChild(heart);
+
+                // Animasyon bitince kalbi kaldır (performans için)
+                heart.addEventListener('animationend', () => {
+                    heart.remove();
+                });
+            }
+        }
+    </script>
+</body>
+</html>
